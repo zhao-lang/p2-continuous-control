@@ -1,0 +1,8 @@
+.vscode/
+.ipynb_checkpoints/
+__pycache__/
+
+Reacher.app
+Reacher20.app
+
+unity-environment.log
