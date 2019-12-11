@@ -55,6 +55,10 @@ The second version with 20 agents was solve in ~40 episodes
 My initial implementation using Ornstein–Uhlenbeck noise was failing to learn.
 I then added an epsilon-greedy decay to the noise samples to improve learning.
 
+In the 20 Agent version, average score ended up dipping under 30 after 100 episodes
+using a learning rate of `1e-3`, decreasing the learning rate to `1e-4` stabilized
+the learning and improved the average score.
+
 ## Future improvements
 
 Some different things to try:
