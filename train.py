@@ -13,7 +13,7 @@ GOAL_SCORE = 30.0
 SCORE_WINDOW = 100
 LOG_EVERY = 1
 
-def train(env, agent, n_episodes=500, max_t=1000):
+def train(env, agent, n_episodes=150, max_t=1000):
     scores = []
     avg_scores = []
     scores_window = deque(maxlen=SCORE_WINDOW)
@@ -22,23 +22,27 @@ def train(env, agent, n_episodes=500, max_t=1000):
         env_info = env.reset(train_mode=True)[brain_name]
         agent.reset()
 
-        state = env_info.vector_observations[0]  
-        score = 0
+        states = env_info.vector_observations  
+        tmp_scores = np.zeros(num_agents)
 
         for t in range(max_t):
-            action = agent.act(state)
+            actions = agent.act(states, add_noise=True)
 
-            env_info = env.step(action)[brain_name]
-            next_state = env_info.vector_observations[0]
-            reward = env_info.rewards[0]
-            done = env_info.local_done[0]
+            env_info = env.step(actions)[brain_name]
+            next_states = env_info.vector_observations
+            rewards = env_info.rewards
+            dones = env_info.local_done
 
-            agent.step(state, action, reward, next_state, done)
-            state = next_state
-            score += reward
-            if done:
+            for state, action, reward, next_state, done in zip(states, actions, rewards, next_states, dones):
+                agent.step(state, action, reward, next_state, done)
+
+            states = next_states
+            tmp_scores += rewards
+
+            if np.any(dones):
                 break 
-
+        
+        score = np.mean(tmp_scores)
         scores_window.append(score)
         scores.append(score)
         avg_scores.append(np.mean(scores_window))
@@ -58,7 +62,7 @@ def train(env, agent, n_episodes=500, max_t=1000):
 
 
 if __name__ == "__main__":
-    env = UnityEnvironment(file_name='./Reacher.app')
+    env = UnityEnvironment(file_name='./Reacher20.app')
 
     # get the default brain
     brain_name = env.brain_names[0]
@@ -96,4 +100,4 @@ if __name__ == "__main__":
     plt.ylabel('Score')
     plt.xlabel('Episode #')
     plt.legend(loc='upper left')
-    plt.savefig('scores.png')
+    plt.savefig('scores_20.png')

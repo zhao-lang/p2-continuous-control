@@ -12,11 +12,11 @@ BUFFER_SIZE = int(1e5)  # replay buffer size
 BATCH_SIZE = 128        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
-LR = 1e-3               # learning rate 
+LR = 1e-4               # learning rate 
 EPSILON = 1.0
 EPSILON_DECAY = 0.99
-UPDATE_EVERY = 4       # how often to update the network
-UPDATE_TIMES = 1       # how many time to learn for each update step
+UPDATE_EVERY = 20       # how often to update the network
+UPDATE_TIMES = 10       # how many time to learn for each update step
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -91,7 +91,7 @@ class DDPGAgent():
             state (array_like): current state
             eps (float): epsilon, for epsilon-greedy action selection
         """
-        state = torch.from_numpy(state).float().unsqueeze(0).to(device)
+        state = torch.from_numpy(state).float().to(device)
         self.policy_local.eval()
         with torch.no_grad():
             action_values = self.policy_local(state).cpu().data.numpy()
